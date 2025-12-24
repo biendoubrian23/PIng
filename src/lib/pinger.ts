@@ -22,7 +22,14 @@ export async function pingDatabase(
     
     // If error is about missing table, it's still a successful ping
     // because we established connection
-    if (error && !error.message.includes('does not exist') && !error.message.includes('permission denied')) {
+    const isTableNotFoundError = error && (
+      error.message.includes('does not exist') || 
+      error.message.includes('Could not find') ||
+      error.message.includes('relation') ||
+      error.message.includes('permission denied')
+    );
+    
+    if (error && !isTableNotFoundError) {
       return {
         databaseId,
         databaseName,
