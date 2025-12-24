@@ -1,0 +1,65 @@
+name: Daily Database Ping
+
+on:
+  schedule:
+    # Ping every day at 8:00 AM UTC
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping-databases:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Ping MakeMinia
+        run: |
+          curl -X POST "${{ secrets.MAKEMINIA_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.MAKEMINIA_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.MAKEMINIA_ANON_KEY }}" \
+            --max-time 30 || true
+          echo "MakeMinia pinged"
+      
+      - name: Ping Test Civique France
+        run: |
+          curl -X POST "${{ secrets.TESTCIVIQUEFRANCE_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.TESTCIVIQUEFRANCE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.TESTCIVIQUEFRANCE_ANON_KEY }}" \
+            --max-time 30 || true
+          echo "Test Civique France pinged"
+      
+      - name: Ping InvoicePDF
+        run: |
+          curl -X POST "${{ secrets.INVOICEPDF_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.INVOICEPDF_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.INVOICEPDF_ANON_KEY }}" \
+            --max-time 30 || true
+          echo "InvoicePDF pinged"
+      
+      - name: Ping Agent Whatsapp
+        run: |
+          curl -X POST "${{ secrets.AGENTWHATSAPP_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.AGENTWHATSAPP_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.AGENTWHATSAPP_ANON_KEY }}" \
+            --max-time 30 || true
+          echo "Agent Whatsapp pinged"
+      
+      - name: Ping Mon Fiscal Facile
+        run: |
+          curl -X POST "${{ secrets.MONFISCALFACILE_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.MONFISCALFACILE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.MONFISCALFACILE_ANON_KEY }}" \
+            --max-time 30 || true
+          echo "Mon Fiscal Facile pinged"
+      
+      - name: Ping TravelHub
+        run: |
+          curl -X POST "${{ secrets.TRAVELHUB_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.TRAVELHUB_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.TRAVELHUB_ANON_KEY }}" \
+            --max-time 30 || true
+          echo "TravelHub pinged"
+      
+      - name: Summary
+        run: |
+          echo "All databases have been pinged successfully!"
+          echo "Time: $(date -u)"
